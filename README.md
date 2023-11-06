@@ -7,8 +7,8 @@ O projeto Fiapark proposto para a pós-graduação [FIAP](https://www.fiap.com.b
 1. [Tecnologias](#tecnologias)
 2. [Ferramentas](#ferramentas)
 3. [Instalação](#instalação)
-5. [Documentação](/DOCUMENTACAO.md)
-6. [Jornada](#jornada)
+5. [Documentação](#documentação)
+6. [Jornada de desenvolvimento](#jornada)
 7. [Autores](#autores)
 8. [Licença](#licença)
 
@@ -86,6 +86,31 @@ Estes são os passos para a execução do projeto num ambiente local, utilizando
 
 ## Documentação
 A documentação no padrão Open Api 3 (Swagger) estará disponível para consulta assim que os containers estiverem sendo executados corretamente no endereço `/docs.html` de ambos os serviços fiapark-api e fiapark-recibos.
+
+## Jornada
+
+A jornada dessa fase do Tech Challenge começou com uma mudança na API que ao meu ver foi positivo, pois realmente nos força a não fazer tanto refactor e pensar mais na disciplina da fase, pra mim isso serviu muito bem e posso dizer que a fase teve um efeito grande em como vou desenvolver daqui pra frente, pensando em containers e sistemas distribuidos sempre que viável e aplicável.
+
+Comecei fazendo um monolito que funcionasse de acordo com as funções necessárias, e com ele funcionando pude ver o domínio da aplicação clararemente e verificar que algumas partes podiam funcionar separadamente e de forma assíncrona.
+Como o principal requisito dessa fase era escalabilidade, monolito surgiram os 3 serviços desse repositório: fiapark-api (gerenciamento dos estacionamentos, condutores e veículos), fiapark-recibos (gerenciamento dos recibos, que eu vejo como a parte fiscal no caso e gostei de deixar isso num banco separado) e fiapark-notificacoes (gerenciamento de notificacoes para os condutores).
+
+Agora com três serviços, sugiu a necessidade de comunicação entre eles, e escolhi utilizar mensageria ao invés de comunicação direta via HTTP. Isso evitaria por exemplo a perda de mensagens e falhas devido a indisponibilidade de um serviço ou outro.
+No caso dos recibos, pensando como um documento fiscal (tratei os recibos como se fosse uma nota fiscal simplificada) escolhi usar o RabbitMQ por conta da grande quantidade de documentação disponível e fácil integração com Spring Boot.
+Pra esse projeto aprendi e implementei também o conceito de Dead Letter Queue, que é uma fila separada para mensagens que não tiveram sucesso no processamento e precisam ser avaliadas e se for o caso, reintegradas na fila principal. O que deu mais segurança ainda pra mensagens importantes, como a de salvar o recibo.
+
+Com a comunicação resolvida, parti pra persistência de dados e escolhi continuar com bancos de dados relacionais para o gerenciamento de estacionamentos, condutores e recibos.
+Tomei essa decisão pela confiabilidade e integridade que um banco SQL oferece. Achei que ainda não fazia sentido utilizar NoSQL nesse projeto (seria só por usar).
+
+Pra solucionar o envio de notificações por e-mail inicialmente escolhi o AWS SES, porém com a burocracia de configurar o domínio de envio (é necessário um domínio personalizado, que eu até configurei para o meu pessoal samuelclinton.com) porém vieram outras dificuldades, como o fato de estar em modo sandbox e somente enviar e-mails pra destinatários confirmados, sendo necessário solicitar acesso a produção. Resolvi implementar o envio de e-mails utilizando SMTP usando o suporte do Spring Boot pra e-mails e criar também uma conta do gmail somente pra isso.
+
+Com os serviços desenvolvidos, eu os Dockerizei individualmente e criei o arquivo compose.yml que iria subir tudo que fosse necessário pra aplicação rodar, para meus proprios testes e futuramente para a correção do Tech Challenge. Porém surgiram erros de inicialização devido a ordem de execução e dependências que eu resolvi com uma ferramenta ótima chamada [docker-compose-wait](https://github.com/ufoscout/docker-compose-wait), que funcionou maravilhosamente bem pra definir a dependência entre os containers e até a múltiplos containers.
+
+Finalmente, com tudo funcionando, disponibilizei as imagens dos serviços em repositórios no [Docker Hub](https://hub.docker.com/u/samuelclinton) pra facilitar a subida do projeto com apenas um comando `compose up`, sem necessidade de buildar cada serviço manualmente. Deixei assim mesmo os `Dockerfile` para referência e pra caso seja necessário gerar uma nova imagem de algum dos serviços novamente.
+
+No fim, decidi por manter tudo rodando localmente pois não me senti confortável em deixar uma aplicação complexa rodando na AWS com meu cartão de crédito atrelado, por tempo indeterminado, pois não conseguiria garantir a data de correção do projeto. E como a API não contava com nenhum sistema anti-abusos, os serviços poderiam sair da cota do free-tier ou gerar grandes custos devido a quantidade de processamento.
+No cenário que idealizei, esse seria o fluxo simplificado da implantação na AWS.
+
+![Fluxo AWS](https://github.com/samuelclinton/fiapark/blob/main/img/aws.png)
 
 ## Autores
 
