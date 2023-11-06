@@ -1,0 +1,646 @@
+{
+	"info": {
+		"_postman_id": "2bb8edd7-d2fa-4bc6-970a-7d37f249bd02",
+		"name": "Fiapark",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27349627"
+	},
+	"item": [
+		{
+			"name": "Condutores",
+			"item": [
+				{
+					"name": "Cadastrar",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function cpf() {\r",
+									"  const rnd = (n) => Math.round(Math.random() * n);\r",
+									"  const mod = (base, div) => Math.round(base - Math.floor(base / div) * div)\r",
+									"  const n = Array(9).fill('').map(() => rnd(9));\r",
+									"\r",
+									"  let d1 = n.reduce((total, number, index) => (total + (number * (10 - index))), 0)\r",
+									"  d1 = 11 - mod(d1, 11);\r",
+									"  if (d1 >= 10) d1 = 0;\r",
+									"  \r",
+									"  let d2 = (d1 * 2) + n.reduce((total, number, index) => (total + (number * (11 - index))), 0)\r",
+									"  d2 = 11 - mod(d2, 11);\r",
+									"  if (d2 >= 10) d2 = 0;\r",
+									"\r",
+									"  return `${n.join('')}${d1}${d2}`\r",
+									"}\r",
+									"\r",
+									"// opicional para postman\r",
+									"pm.environment.set('cpf', cpf());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"condutorId\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"{{$randomFullName}}\",\r\n    \"email\": \"email-valido@gmail.com\",\r\n    \"cpf\": \"{{cpf}}\",\r\n    \"telefone\": \"11977220431\",\r\n    \"endereco\": {\r\n        \"rua\": \"Avenida dos bandeirantes\",\r\n        \"numero\": \"140C\",\r\n        \"cidade\": \"Osasco\",\r\n        \"estado\": \"SP\",\r\n        \"cep\": \"01234000\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/condutores",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"condutores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/condutores/{{condutorId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"condutores",
+								"{{condutorId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar dados",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function cpf() {\r",
+									"  const rnd = (n) => Math.round(Math.random() * n);\r",
+									"  const mod = (base, div) => Math.round(base - Math.floor(base / div) * div)\r",
+									"  const n = Array(9).fill('').map(() => rnd(9));\r",
+									"\r",
+									"  let d1 = n.reduce((total, number, index) => (total + (number * (10 - index))), 0)\r",
+									"  d1 = 11 - mod(d1, 11);\r",
+									"  if (d1 >= 10) d1 = 0;\r",
+									"  \r",
+									"  let d2 = (d1 * 2) + n.reduce((total, number, index) => (total + (number * (11 - index))), 0)\r",
+									"  d2 = 11 - mod(d2, 11);\r",
+									"  if (d2 >= 10) d2 = 0;\r",
+									"\r",
+									"  return `${n.join('')}${d1}${d2}`\r",
+									"}\r",
+									"\r",
+									"// opicional para postman\r",
+									"pm.environment.set('cpf', cpf());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"{{$randomFullName}}\",\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"cpf\": \"{{cpf}}\",\r\n    \"telefone\": \"11909838740\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/condutores/{{condutorId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"condutores",
+								"{{condutorId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar endereço",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rua\": \"Avenida dos tarubos\",\r\n    \"numero\": \"1450\",\r\n    \"cidade\": \"Recife\",\r\n    \"estado\": \"PE\",\r\n    \"cep\": \"04321000\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/condutores/{{condutorId}}/enderecos",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"condutores",
+								"{{condutorId}}",
+								"enderecos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Excluir",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/condutores/{{condutorId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"condutores",
+								"{{condutorId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Veículos",
+			"item": [
+				{
+					"name": "Cadastrar",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var veiculos = [\r",
+									"    {marca: 'Hyundai', modelo: 'HB20'},\r",
+									"    {marca: 'Chevrolet', modelo: 'Onix'},\r",
+									"    {marca: 'Volkswagen', modelo: 'Polo'},\r",
+									"    {marca: 'Honda', modelo: 'Civic'},\r",
+									"    {marca: 'Mitsubishi', modelo: 'L200'}];\r",
+									"\r",
+									"var veiculoAleatorio = veiculos[Math.floor(Math.random() * veiculos.length)];\r",
+									"\r",
+									"postman.setEnvironmentVariable(\"marcaVeiculo\", veiculoAleatorio.marca);\r",
+									"postman.setEnvironmentVariable(\"modeloVeiculo\", veiculoAleatorio.modelo);\r",
+									"\r",
+									"var placa = 'ABC-012';\r",
+									"postman.setEnvironmentVariable(\"placaVeiculo\", placa + finalAleatorio());\r",
+									"\r",
+									"function finalAleatorio() {\r",
+									"    return Math.floor(Math.random() * 10);\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"veiculoId\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"placa\": \"{{placaVeiculo}}\",\r\n    \"cor\": \"Branco\",\r\n    \"marca\": \"{{marcaVeiculo}}\",\r\n    \"modelo\": \"{{modeloVeiculo}}\",\r\n    \"condutor\": {\r\n        \"id\": {{condutorId}}\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/veiculos",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"veiculos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function cpf() {\r",
+									"  const rnd = (n) => Math.round(Math.random() * n);\r",
+									"  const mod = (base, div) => Math.round(base - Math.floor(base / div) * div)\r",
+									"  const n = Array(9).fill('').map(() => rnd(9));\r",
+									"\r",
+									"  let d1 = n.reduce((total, number, index) => (total + (number * (10 - index))), 0)\r",
+									"  d1 = 11 - mod(d1, 11);\r",
+									"  if (d1 >= 10) d1 = 0;\r",
+									"  \r",
+									"  let d2 = (d1 * 2) + n.reduce((total, number, index) => (total + (number * (11 - index))), 0)\r",
+									"  d2 = 11 - mod(d2, 11);\r",
+									"  if (d2 >= 10) d2 = 0;\r",
+									"\r",
+									"  return `${n.join('')}${d1}${d2}`\r",
+									"}\r",
+									"\r",
+									"// opicional para postman\r",
+									"pm.environment.set('cpf', cpf());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"placa\": \"abc-2234\",\r\n    \"cor\": \"Branco\",\r\n    \"marca\": \"{{$randomCompanyName}}\",\r\n    \"modelo\": \"{{$randomProductName}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/veiculos/{{veiculoId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"veiculos",
+								"{{veiculoId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Excluir",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/veiculos/{{veiculoId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"veiculos",
+								"{{veiculoId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Formas de pagamento",
+			"item": [
+				{
+					"name": "Cadastrar",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"formaPagamentoId\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tipo\": \"CREDITO\",\r\n    \"apelido\": \"Visa Black\",\r\n    \"cartao\": \"8888000099995581\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/condutores/{{condutorId}}/formas-pagamento",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"condutores",
+								"{{condutorId}}",
+								"formas-pagamento"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Excluir",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/condutores/{{condutorId}}/formas-pagamento/{{formaPagamentoId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"condutores",
+								"{{condutorId}}",
+								"formas-pagamento",
+								"{{formaPagamentoId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Estacionamento",
+			"item": [
+				{
+					"name": "Estacionar",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"estacionamentoId\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"veiculo\": {\r\n        \"id\": {{veiculoId}}\r\n    },\r\n    \"formaPagamento\": {\r\n        \"id\": {{formaPagamentoId}}\r\n    },\r\n    \"tipo\": \"DINAMICO\",\r\n    \"tempoEstacionado\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/estacionamentos",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"estacionamentos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Finalizar",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/estacionamentos/{{estacionamentoId}}/finalizacao",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"estacionamentos",
+								"{{estacionamentoId}}",
+								"finalizacao"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Recibos",
+			"item": [
+				{
+					"name": "Listar",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/recibos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"recibos"
+							],
+							"query": [
+								{
+									"key": "cpf",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
