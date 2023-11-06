@@ -1,0 +1,66 @@
+networks:
+  fiapark-network:
+    driver: bridge
+services:
+  fiapark-mysql:
+    image: mysql:8.0.32
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    networks:
+      - fiapark-network
+  fiapark-rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - fiapark-network
+  fiapark-api:
+    image: fiapark-api
+    ports:
+      - "8080:8080"
+    networks:
+      - fiapark-network
+    environment:
+      WAIT_HOSTS: fiapark-mysql:3306, fiapark-rabbitmq:5672
+      DB_HOST: fiapark-mysql
+      DB_USER: root
+      DB_PASSWORD: root
+      RABBITMQ_HOST: fiapark-rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: guest
+      RABBITMQ_PASSWORD: guest
+    command: sh -c "/wait && java -jar /app/fiapark-api.jar"
+  fiapark-recibos:
+    image: fiapark-recibos
+    ports:
+      - "8081:8081"
+    networks:
+      - fiapark-network
+    environment:
+      WAIT_HOSTS: fiapark-mysql:3306, fiapark-rabbitmq:5672
+      DB_HOST: fiapark-mysql
+      DB_USER: root
+      DB_PASSWORD: root
+      RABBITMQ_HOST: fiapark-rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: guest
+      RABBITMQ_PASSWORD: guest
+    command: sh -c "/wait && java -jar /app/fiapark-recibos.jar"
+  fiapark-notificacoes:
+    image: fiapark-notificacoes
+    ports:
+      - "8082:8082"
+    networks:
+      - fiapark-network
+    environment:
+      WAIT_HOSTS: fiapark-mysql:3306, fiapark-rabbitmq:5672
+      RABBITMQ_HOST: fiapark-rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: guest
+      RABBITMQ_PASSWORD: guest
+      EMAIL_USER: noreply.fiapark@gmail.com
+      EMAIL_PASSWORD: "lfds sqgo isuo gjnr"
+    command: sh -c "/wait && java -jar /app/fiapark-notificacoes.jar"
